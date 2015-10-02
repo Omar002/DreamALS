@@ -1,0 +1,86 @@
+└── ProActProgression
+    ├── data
+    │   ├── all_forms_PROACT.txt
+    │   ├── all_forms_validate_leader.txt
+    │   ├── all_forms_validate_spike.txt
+    │   ├── ALSFRS_slope_PROACT.txt
+    │   ├── ALSFRS_slope_validate_leader2.txt
+    │   ├── ALSFRS_slope_validate_spike.txt
+    │   ├── surv_response_PROACT.txt
+    │   ├── surv_response_validate_leader.txt
+    │   └── surv_response_validate_spike.txt
+    ├── information_gain_top6.csv
+    ├── predictor.py
+    ├── predictor.sh
+    ├── preprocessor.R
+    ├── README
+    ├── selector.R
+    └── selector.sh
+
+
+
+1) Prepare the data
+
+	This is the structure of directory: 
+	data should be put in a directory named "data", which located at the same 
+	directory 	as preprocessor.R, so before processing ALS data, please create 
+	a directory named "data" and fill the files required.
+
+
+2) Prepare the environment
+
+	Environment:
+		* R version 3.2.1 (2015-06-18) -- "World-Famous Astronaut" 
+		* python 2.7.9
+		* predictor.py can run on the IBM machine (python 2.7.10)
+
+	Serveral libraries have been used by preprocessor.R, so install them first:
+		* python libraries:
+			- pandas
+			- numpy
+
+		* R librarys:
+			- foreach
+			- doParallel
+			- plyr
+
+	R packages can be installed through commands below:
+
+		$ R
+
+		> install.packages("foreach")
+		> install.packages("doParallel")
+		> install.packages("plyr")
+
+
+3) Run the program
+
+	$ Rscript preprocessor.R
+
+	By enter the command above, the script would prepare data for our predictor
+	model.The output of this r script would be 3 csv files: subjects to 
+	time-independent features and subjects to time-dependent features ( maximum
+	value and minimum value of each feature ).
+
+	$ sh selector.sh $1 $2
+	$ sh predictor.sh $1 $2
+
+	The variables ( $1 and $2 ) are input and output of each shell script
+	respectively.Both $1 of the commands are data of a single subject.
+	For example:
+		$ sh selector.sh 329.txt 329.out1.txt
+		$ sh predictor.sh 329.out1.txt 329.out2.txt
+
+4) Postscript
+
+	* What is "information_gain_top6.csv" and what is it for?
+		"information_gain_top6.csv" was produced from output of "preprocessor.R"
+		by a opensourse software called orange 
+		Website: http://orange.biolab.si/
+		
+		"information_gain_top6.csv" is the training data set for our predicting
+		model.
+
+	* Execution time
+		On a 64-core machine, preprocessor.R takes approximately 3.5 hours.
+
